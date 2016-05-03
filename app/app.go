@@ -51,15 +51,11 @@ func Init(dbPath, privKey, pubKey string) {
 
 func registerFuncMap() {
 	App.View.FuncMap["DateFormat"] = utils.DateFormat
-	App.View.FuncMap["DateInt64"] = utils.DateInt64
-	App.View.FuncMap["DateString"] = utils.DateString
-	App.View.FuncMap["DateTime"] = utils.DateTime
 	App.View.FuncMap["Now"] = utils.Now
 	App.View.FuncMap["Html2Str"] = utils.Html2Str
 	App.View.FuncMap["FileSize"] = utils.FileSize
 	App.View.FuncMap["Setting"] = model.GetSettingValue
 	App.View.FuncMap["Navigator"] = model.GetNavigators
-	App.View.FuncMap["Md2html"] = utils.Markdown2HtmlTemplate
 }
 
 func registerMiddlewares() {
