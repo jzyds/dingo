@@ -1,6 +1,7 @@
 package handler
 
 import (
+	// "encoding/base64"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -29,9 +30,18 @@ func registerJWTHandlers(app *golf.Application, routes map[string]map[string]int
 func JWTAuthLoginHandler(ctx *golf.Context) {
 	var email string
 	var password string
+	var ok bool
 	contentType := ctx.Header("Content-Type")
+	authorization := ctx.Header("Authorization")
 	ctx.SetHeader("Content-Type", "application/json")
 	switch {
+	case len(authorization) >= 0:
+		email, password, ok = ctx.Request.BasicAuth()
+		if !ok {
+			ctx.SendStatus(http.StatusBadRequest)
+			ctx.JSON(map[string]interface{}{"status": "error: invalid Authorization header value"})
+			return
+		}
 	case strings.Contains(contentType, "application/json"):
 		defer ctx.Request.Body.Close()
 		body, err := ioutil.ReadAll(ctx.Request.Body)
@@ -49,7 +59,7 @@ func JWTAuthLoginHandler(ctx *golf.Context) {
 		password = ctx.Request.FormValue("password")
 	default:
 		ctx.SendStatus(http.StatusBadRequest)
-		ctx.JSON(map[string]interface{}{"status": "error: unrecognized Content-Type"})
+		ctx.JSON(map[string]interface{}{"status": "error: unrecognized or missing Content-Type"})
 		return
 	}
 	user := &model.User{Email: email}
