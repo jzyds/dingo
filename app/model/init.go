@@ -3,7 +3,7 @@ package model
 import (
 	"database/sql"
 
-	"github.com/dingoblog/dingo/app/utils"
+	"github.com/jzyds/dingo/app/utils"
 	_ "github.com/mattn/go-sqlite3"
 )
 

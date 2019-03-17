@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/dingoblog/dingo/app/utils"
+	"github.com/jzyds/dingo/app/utils"
 	"github.com/russross/meddler"
 	"golang.org/x/crypto/bcrypt"
 )

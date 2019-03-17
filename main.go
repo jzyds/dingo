@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/dingoblog/dingo/app"
+	"github.com/jzyds/dingo/app"
 )
 
 func main() {

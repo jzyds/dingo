@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/dinever/golf"
-	"github.com/dingoblog/dingo/app/handler"
-	"github.com/dingoblog/dingo/app/model"
+	"github.com/jzyds/dingo/app/handler"
+	"github.com/jzyds/dingo/app/model"
 )
 
 func fileExists(filename string) bool {

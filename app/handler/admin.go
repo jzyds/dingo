@@ -4,8 +4,8 @@ import (
 	"strconv"
 
 	"github.com/dinever/golf"
-	"github.com/dingoblog/dingo/app/model"
-	"github.com/dingoblog/dingo/app/utils"
+	"github.com/jzyds/dingo/app/model"
+	"github.com/jzyds/dingo/app/utils"
 )
 
 func AdminHandler(ctx *golf.Context) {

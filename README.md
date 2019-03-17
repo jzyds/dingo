@@ -2,7 +2,7 @@
 
 ![Dingo Logo](https://cloud.githubusercontent.com/assets/1311594/15427334/652081ae-1e62-11e6-9ae3-1dd0a667f22d.png)
 
-[![CI status](https://img.shields.io/travis/dingoblog/dingo.svg)](https://travis-ci.org/dingoblog/dingo/)
+[![CI status](https://img.shields.io/travis/dingoblog/dingo.svg)](https://travis-ci.org/jzyds/dingo/)
 [![Gitter](https://badges.gitter.im/dingoblog/dingo.svg)](https://gitter.im/dingoblog/dingo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Dingo is a full-featured blog engine written in Go.
@@ -18,21 +18,21 @@ Dingo is a full-featured blog engine written in Go.
 ## Installation
 
 ```
-$ go get github.com/dingoblog/dingo
+$ go get github.com/jzyds/dingo
 ```
 
 ## Run the Server
 
 ```
-$ cd $GOPATH/src/github.com/dingoblog/dingo
+$ cd $GOPATH/src/github.com/jzyds/dingo
 $ go run main.go --port 8000
 ```
 
 ## Contributing
 
-To contribute, please take a look at our [roadmap](https://github.com/dingoblog/dingo/issues/7) to find the issue that you would like to work on.
+To contribute, please take a look at our [roadmap](https://github.com/jzyds/dingo/issues/7) to find the issue that you would like to work on.
 
-To read the source code, please start from the [URL endpoints](https://github.com/dingoblog/dingo/blob/master/app/app.go#L71)
+To read the source code, please start from the [URL endpoints](https://github.com/jzyds/dingo/blob/master/app/app.go#L71)
 
 ## Admin Panel
 
