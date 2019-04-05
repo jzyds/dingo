@@ -1,55 +1,96 @@
 package handler
 
 import (
+	"fmt"
+	"io/ioutil"
+	"math/rand"
+	"os"
+	"path"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/dinever/golf"
 	"github.com/jzyds/dingo/app/model"
 	"github.com/jzyds/dingo/app/utils"
-	"io/ioutil"
-	"os"
-	"path"
-	"strings"
 )
 
-func FileViewHandler(ctx *golf.Context) {
-	user, _ := ctx.Session.Get("user")
-	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
-	uploadDir = path.Clean(uploadDir)
-	ctx.Request.ParseForm()
-	dir, err := ctx.Query("dir")
-	dir = path.Clean(dir)
-	var (
-		ParentDir  string
-		IsChildDir bool
-	)
-	if err == nil && dir != uploadDir {
-		IsChildDir = true
-		ParentDir = path.Join(dir, "..")
-	} else {
-		IsChildDir = false
-		dir = uploadDir
+func getRandomString(l int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyz"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < l; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
 	}
-	var files []*model.File
-	if model.CheckSafe(dir, uploadDir) {
-		files = model.GetFileList(dir)
+	return string(result)
+}
+
+func FileDbViewHandle(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	u := userObj.(*model.User)
+	p := ctx.Request.FormValue("page")
+	var page int
+	if p == "" {
+		page = 1
 	} else {
-		ctx.Abort(403)
-		return
+		page, _ = strconv.Atoi(p)
+	}
+
+	fileItem := new(model.FileDbItem)
+
+	pager, err := fileItem.GetFileDbItem(int64(page), 10, "created_at DESC")
+
+	if err != nil {
+		panic(err)
 	}
 	ctx.Loader("admin").Render("files.html", map[string]interface{}{
-		"Title":      "Files",
-		"Files":      files,
-		"User":       user,
-		"CurrentDir": dir,
-		"IsChildDir": IsChildDir,
-		"ParentDir":  ParentDir,
+		"Title": "Files",
+		"Files": fileItem,
+		"User":  u,
+		"Pager": pager,
 	})
 }
 
+// func FileViewHandler(ctx *golf.Context) {
+// 	user, _ := ctx.Session.Get("user")
+// 	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
+// 	uploadDir = path.Clean(uploadDir)
+// 	ctx.Request.ParseForm()
+// 	dir, err := ctx.Query("dir")
+// 	dir = path.Clean(dir)
+
+// 	if err == nil && dir != uploadDir {
+// 	} else {
+// 		dir = uploadDir
+// 	}
+// 	var files []*model.File
+// 	if model.CheckSafe(dir, uploadDir) {
+// 		files = model.GetFileList(dir)
+// 	} else {
+// 		ctx.Abort(403)
+// 		return
+// 	}
+// 	ctx.Loader("admin").Render("files.html", map[string]interface{}{
+// 		"Title": "Files",
+// 		"Files": files,
+// 		"User":  user,
+// 	})
+// }
+
 func FileRemoveHandler(ctx *golf.Context) {
-	p := ctx.Request.FormValue("path")
+	id := ctx.Request.FormValue("id")
+	fileID, _ := strconv.Atoi(id)
+
+	file := &model.FileDb{ID: int64(fileID)}
+	err := file.GetFileByID()
+	if err != nil {
+		panic(err)
+	}
+
 	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
-	if model.CheckSafe(p, uploadDir) {
-		err := model.RemoveFile(p)
+	if model.CheckSafe(file.URL, uploadDir) {
+		err := os.RemoveAll(file.URL)
 		if err != nil {
 			panic(err)
 		}
@@ -57,6 +98,13 @@ func FileRemoveHandler(ctx *golf.Context) {
 		ctx.Abort(403)
 		return
 	}
+
+	err = model.DeleteFileByID(int64(fileID))
+
+	if err != nil {
+		panic(err)
+	}
+
 	ctx.JSON(map[string]interface{}{
 		"status": "success",
 	})
@@ -95,8 +143,12 @@ func FileUploadHandler(ctx *golf.Context) {
 		})
 		return
 	}
+
+	saveFileName := getRandomString(10) + "_" + h.Filename
+	fmt.Println(saveFileName)
+
 	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
-	Url := model.CreateFilePath(uploadDir, h.Filename)
+	Url := model.CreateFilePath(uploadDir, saveFileName)
 	e = ioutil.WriteFile(Url, data, os.ModePerm)
 	if e != nil {
 		ctx.JSON(map[string]interface{}{
@@ -109,22 +161,28 @@ func FileUploadHandler(ctx *golf.Context) {
 	if err != nil {
 		ctx.JSON(map[string]interface{}{
 			"status": "error",
-			"msg": e.Error(),
+			"msg":    e.Error(),
 		})
 		return
 	}
-	
+
+	fDb := model.NewFileDb()
+	fDb.Name = saveFileName
+	fDb.IsShowOnGallery = false
+	fDb.URL = Url
+	fDb.Save()
+
 	fSize := utils.FileSize(fi.Size())
-	fileModTime := fi.ModTime()
-	fModTime := utils.DateFormat(&fileModTime, "%Y-%m-%d %H:%M")
+	fModTime := utils.DateFormat(fDb.CreatedAt, "%Y-%m-%d %H:%M")
 	ctx.JSON(map[string]interface{}{
 		"status": "success",
 		"file": map[string]interface{}{
-			"url":  Url,
-			"name": h.Filename,
-			"size": fSize,
-			"type": "File",
-			"time": fModTime,
+			"url":                Url,
+			"name":               saveFileName,
+			"size":               fSize,
+			"type":               "File",
+			"time":               fModTime,
+			"is_show_on_gallery": fDb.IsShowOnGallery,
 		},
 	})
 }

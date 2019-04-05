@@ -38,3 +38,4 @@ dingo.rsa.pub
 # Ignore upload directory
 upload/*
 
+node_modules

@@ -92,7 +92,7 @@ func registerAdminURLHandlers(app *golf.Application) {
 	app.Post("/admin/setting/custom/", authChain.Final(SettingCustomHandler))
 	app.Post("/admin/setting/nav/", authChain.Final(SettingNavHandler))
 	//
-	app.Get("/admin/files/", authChain.Final(FileViewHandler))
+	app.Get("/admin/files/", authChain.Final(FileDbViewHandle))
 	app.Delete("/admin/files/", authChain.Final(FileRemoveHandler))
 	app.Post("/admin/files/upload/", authChain.Final(FileUploadHandler))
 

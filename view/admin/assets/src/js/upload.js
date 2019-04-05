@@ -7,14 +7,24 @@ function editorAction(json) {
 function filesAction(json) {
     var $fileLine = $('<tr id="file-' + json.file.name + '">' 
         + '<td class="mdl-data-table__cell--non-numeric">' + json.file.time + '</td>'
-        + '<td class="mdl-data-table__cell--non-numeric">' + json.file.size + '</td>'
+        // + '<td class="mdl-data-table__cell--non-numeric">' + json.file.size + '</td>'
         + '<td class="mdl-data-table__cell--non-numeric">' + json.file.name + '</td>'
+        + '<td class="mdl-data-table__cell--non-numeric">'
+          + '<img class="admin-thumbnail" src="/' + json.file.url + '" alt="">'
+        + '</td>'
         + '<td class="mdl-data-table__cell--non-numeric">' + json.file.type + '</td>'
+        +` <td class="mdl-data-table__cell--non-numeric">
+            <select class="dig-select" name="{{.Name}}">
+            <option value ="true">true</option>
+            <option value ="false">false</option>
+            </select>
+        </td>`
+
         + '<td class="mdl-data-table__cell--non-numeric">'
           + '<a class="btn btn-small blue" href="/'+ json.file.url +'" target="_blank" title="/' + json.file.name + '">View</a>&nbsp;'
           + '<a class="btn btn-small red delete-file" href="#" name="' + json.file.name + '" rel="' + json.file.url + '" title="Delete">Delete</a>'
         + '</td></tr>');
-    $('tbody').append($fileLine);
+    $('tbody').prepend($fileLine);
 }
 
 function initUpload(p) {
@@ -43,8 +53,7 @@ function initUpload(p) {
                     }
                     
                     alertify.success("File has been uploaded.")
-                    bar.html("/" + json.file.url + "&nbsp;&nbsp;&nbsp;(@" + json.file.name + ")");
-                    
+                    bar.html("/" + json.file.url + "&nbsp;&nbsp;&nbsp;(@" + json.file.name + ")");                    
                     if ($('.CodeMirror').length == 0) {
                         filesAction(json);
                     } else {

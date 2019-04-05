@@ -146,4 +146,13 @@ messages (
   is_read      boolean NOT NULL default 0,
   created_at   datetime NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS
+files (
+  id                     integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name                   varchar(150) NOT NULL,
+  url                    varchar(500) NOT NULL,
+  created_at             datetime NOT NULL,
+  is_show_on_gallery     BOOLEAN
+)
 `

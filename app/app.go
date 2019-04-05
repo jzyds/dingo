@@ -32,5 +32,5 @@ func Run(portNumber string) {
 	app := golf.New()
 	app = handler.Initialize(app)
 	fmt.Printf("Application Started on port %s\n", portNumber)
-	app.Run(":" + portNumber)
+	app.Run("127.0.0.1:" + portNumber)
 }
