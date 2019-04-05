@@ -45,9 +45,14 @@
                   File
                 </td>
                 <td class="mdl-data-table__cell--non-numeric">
-                  <select class="dig-select" name="{{.Name}}">
-                    <option value ="true">true</option>
-                    <option value ="false">false</option>
+                  <select class="dig-select" id="{{.ID}}" name="{{.Name}}">
+                      {{if .IsShowOnGallery}}
+                        <option selected value="true">true</option>
+                        <option value="false">false</option>
+                      {{else}}
+                        <option value="true">true</option>
+                        <option selected value="false">false</option>
+                      {{end}}
                   </select>
                 </td>
                 <td class="mdl-data-table__cell--non-numeric">

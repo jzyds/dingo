@@ -26,6 +26,31 @@ func getRandomString(l int) string {
 	return string(result)
 }
 
+func FileGalleryStatusHandler(ctx *golf.Context) {
+	//获取 Content-Type=application/x-www-form-urlencoded
+	id := ctx.Request.PostFormValue("id")
+	val := ctx.Request.PostFormValue("val")
+	fileID, _ := strconv.Atoi(id)
+
+	file := &model.FileDb{ID: int64(fileID)}
+	err := file.GetFileByID()
+	if err != nil {
+		ctx.JSON(map[string]interface{}{
+			"status": "error",
+		})
+		panic(err)
+	}
+
+	boolVal, _ := strconv.ParseBool(val)
+	fmt.Println(val)
+	file.IsShowOnGallery = boolVal
+	file.Save()
+
+	ctx.JSON(map[string]interface{}{
+		"status": "success",
+	})
+}
+
 func FileDbViewHandle(ctx *golf.Context) {
 	userObj, _ := ctx.Session.Get("user")
 	u := userObj.(*model.User)
@@ -177,6 +202,7 @@ func FileUploadHandler(ctx *golf.Context) {
 	ctx.JSON(map[string]interface{}{
 		"status": "success",
 		"file": map[string]interface{}{
+			"id":                 fDb.ID,
 			"url":                Url,
 			"name":               saveFileName,
 			"size":               fSize,

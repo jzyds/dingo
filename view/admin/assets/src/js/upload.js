@@ -14,9 +14,9 @@ function filesAction(json) {
         + '</td>'
         + '<td class="mdl-data-table__cell--non-numeric">' + json.file.type + '</td>'
         +` <td class="mdl-data-table__cell--non-numeric">
-            <select class="dig-select" name="{{.Name}}">
-            <option value ="true">true</option>
-            <option value ="false">false</option>
+            <select class="dig-select" id="${json.file.id}">
+              <option ${json.is_show_on_gallery ? 'selected'  : ''} value ="true">true</option>
+              <option ${json.is_show_on_gallery ? ''  : 'selected'} value ="false">false</option>
             </select>
         </td>`
 
@@ -25,6 +25,7 @@ function filesAction(json) {
           + '<a class="btn btn-small red delete-file" href="#" name="' + json.file.name + '" rel="' + json.file.url + '" title="Delete">Delete</a>'
         + '</td></tr>');
     $('tbody').prepend($fileLine);
+    window.listenDigSelectEvent()
 }
 
 function initUpload(p) {

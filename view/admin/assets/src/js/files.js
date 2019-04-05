@@ -3,7 +3,6 @@ $(function() {
     e.preventDefault();
 
     var me = $(this);
-    var name = me.attr("name");
     var id = me.attr("id");
 
     alertify.confirm("Are you sure you want to delete this file?", function() {
@@ -25,9 +24,26 @@ $(function() {
   });
 });
 
-$(function() {
+window.listenDigSelectEvent = function () {
   $(".dig-select").change(function(){
-    console.log($(this))
-    var selected=$(this).children('option:selected').val();
+    console.log(123)
+    var id = $(this).attr("id");
+    var val=$(this).find('option:selected').val();
+    $.ajax({
+      type: "post",
+      url: "/admin/files/gallery_status",
+      data: `id=${id}&val=${val}`,
+      success: function(json) {
+        if (json.status === "success") {
+          alertify.success(`change id ${id} success`);
+        } else {
+          alert(json.msg);
+        }
+      }
+    });
   })
+}
+
+$(function() {
+  listenDigSelectEvent()
 });

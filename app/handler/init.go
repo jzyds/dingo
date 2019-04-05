@@ -96,6 +96,9 @@ func registerAdminURLHandlers(app *golf.Application) {
 	app.Delete("/admin/files/", authChain.Final(FileRemoveHandler))
 	app.Post("/admin/files/upload/", authChain.Final(FileUploadHandler))
 
+	app.Post("/admin/files/gallery_status/", authChain.Final(FileGalleryStatusHandler))
+
+
 	app.Get("/admin/password/", authChain.Final(AdminPasswordPage))
 	app.Post("/admin/password/", authChain.Final(AdminPasswordChange))
 
