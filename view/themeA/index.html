@@ -2,30 +2,86 @@
 
 {{ define "content"}}
 <div id="content" class="content-home">
-  <div class="row">
-    {{ range .Posts }}
-    <article class="post tag-news tag-media featured col-sm-12">
-      <h2 class="post-title"><a href="{{ .Url }}/" title="{{ .Title }}">{{ .Title }}</a></h2>
-      <ul class="post-tags">
-        {{ range .Tags }}
-        <li>
-          <a href="{{ .Url }}/" title="Tech">{{ .Name }}</a>
-        </li>
-        {{ end }}
-      </ul>
-      <div class="post-meta"><span>By</span> <a href="#" title="{{ .Author.Name }}">{{ .Author.Name }}</a>,  <time datetime='{{DateFormat .PublishedAt "%Y-%m-%d"}}'>{{ DateFormat .PublishedAt "%b %d, %Y"}}</time></div>
-      <div class="post-excerpt">{{.Excerpt}} ...</div>
-      <a href="{{ .Url }}/" title="{{ .Title }}" class="read-more">Read more</a>
-    </article>
-    {{ end }}
-  </div>
-
-  <nav class="pagination clearfix">
-    <span class="page-number">Page {{ .Pager.Current }} of {{ .Pager.Pages }}</span>
-    <div class="pagination-links">
-      {{if .Pager.IsNext}}<a href="/page/{{.Pager.Next}}/" class="item left">Older Posts</a>{{end}}
-      {{if .Pager.IsPrev}}<a href="/page/{{.Pager.Prev}}/" class="item right">Newer Posts</a>{{end}}
-    </div>
-  </nav>
+  <div id="imgContainer" class="justified-gallery"></div>
 </div>
+
+<script>
+  let currentPage = 1;
+
+  function initPSWP() {
+    var pswpElement = document.querySelectorAll(".pswp")[0];
+
+    // build items array
+    var items = [
+      {
+        src: "https://placekitten.com/600/400",
+        w: 600,
+        h: 400
+      },
+      {
+        src: "https://placekitten.com/1200/900",
+        w: 1200,
+        h: 900
+      }
+    ];
+
+    // define options (if needed)
+    var options = {
+      // optionName: 'option value'
+      // for example:
+      index: 0 // start at first slide
+    };
+
+    // Initializes and opens PhotoSwipe
+    var gallery = new PhotoSwipe(
+      pswpElement,
+      PhotoSwipeUI_Default,
+      items,
+      options
+    );
+    gallery.init();
+  }
+
+  function addImg(list) {
+    var imgContainer = document.getElementById("imgContainer");
+    var h = "";
+    for (var i = 0; i < list.length; i++) {
+      var item = list[i];
+      h += `
+        <a href="#" title="">
+          <img alt="" src="/${item.URL}" />
+        </a>
+      `;
+    }
+    imgContainer.innerHTML += h;
+    $("#imgContainer").justifiedGallery({
+      rowHeight: 300,
+      lastRow: "justify",
+      margins: 10
+    });
+  }
+
+  function reloadData() {
+    $.ajax({
+      type: "get",
+      url: "/gallery?page=" + currentPage,
+      success: function(json) {
+        if (json != null) {
+          addImg(json);
+        }
+      }
+    });
+  }
+
+  window.onload = function() {
+    reloadData();
+    // 上拉加载更多
+    $(window).scroll(function() {
+      if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+        currentPage ++;
+        reloadData();
+      }
+    });
+  };
+</script>
 {{ end }}

@@ -1,6 +1,6 @@
 //fonts
-$font_0: weather;
-$font_1: Montserrat;
+$font_0: Gloria Hallelujah;
+$font_1: Josefin Sans;
 $font_2: HelveticaNeue;
 $font_3: Helvetica Neue;
 $font_4: Helvetica;
@@ -9,6 +9,10 @@ $font_6: sans-serif;
 $font_7: Source Sans Pro;
 $font_8: Georgia;
 $font_9: serif;
+
+*{
+  font-family: font_1;
+}
 
 //@extend-elements
 //original selectors

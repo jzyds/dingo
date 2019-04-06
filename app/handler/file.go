@@ -59,10 +59,9 @@ func GalleryListHandle(ctx *golf.Context) {
 
 	pageList, ok := ctx.Request.URL.Query()["page"]
 	if !ok || len(pageList) < 1 {
+		log.Println("Url Param 'key' is missing")
 		ctx.SendStatus(http.StatusBadRequest)
 		ctx.JSON(APIResponseBodyJSON{Status: NewErrorStatusJSON(err.Error())})
-		return
-		log.Println("Url Param 'key' is missing")
 		return
 	}
 	limit := 10

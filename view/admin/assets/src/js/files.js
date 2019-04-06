@@ -26,7 +26,6 @@ $(function() {
 
 window.listenDigSelectEvent = function () {
   $(".dig-select").change(function(){
-    console.log(123)
     var id = $(this).attr("id");
     var val=$(this).find('option:selected').val();
     $.ajax({

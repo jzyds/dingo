@@ -27,11 +27,21 @@
 }
 
 #header {
-  background-color: $header_background_color;
+  // background-color: $header_background_color;
   #top {
     .container {
+      position: relative;
       padding: 30px;
-      background-color: $header_color;
+      // background-color: $header_color;
+      .nav-themeA-main{
+        position: absolute;
+        right:30px;
+        top: 60px;
+        .nav-themeA{
+          display: inline-block;
+          margin-left: 30px;
+        }
+      }
     }
     #logo {
       float: left;
