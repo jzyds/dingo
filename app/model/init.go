@@ -91,11 +91,11 @@ func Initialize(dbPath string, dbExists bool) error {
 		return err
 	}
 
-	if !dbExists {
-		if err := createWelcomeData(); err != nil {
-			return err
-		}
-	}
+	// if !dbExists {
+	// 	if err := createWelcomeData(); err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	return nil
 }
@@ -119,7 +119,7 @@ func createTableIfNotExist() error {
 }
 
 func checkBlogSettings() {
-	SetSettingIfNotExists("theme", "default", "blog")
+	SetSettingIfNotExists("theme", "themeA", "blog")
 	SetSettingIfNotExists("title", "My Blog", "blog")
 	SetSettingIfNotExists("description", "Awesome blog created by Dingo.", "blog")
 }

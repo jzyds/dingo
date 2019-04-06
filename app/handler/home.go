@@ -1,15 +1,16 @@
 package handler
 
 import (
-	"github.com/dinever/golf"
-	"github.com/jzyds/dingo/app/model"
-	"github.com/jzyds/dingo/app/utils"
 	"html/template"
 	"log"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/dinever/golf"
+	"github.com/jzyds/dingo/app/model"
+	"github.com/jzyds/dingo/app/utils"
 )
 
 func RegisterFunctions(app *golf.Application) {

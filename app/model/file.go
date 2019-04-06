@@ -17,6 +17,7 @@ const stmtGetFileByID = `SELECT * FROM files WHERE id = ?`
 const stmtNumberOfFileItem = "SELECT count(*) FROM files"
 const stmtGetFileItem = `SELECT * FROM files ORDER BY %s LIMIT ? OFFSET ?`
 const stmtDeleteFileByID = `DELETE FROM files WHERE id = ?`
+const stmtGetFileOffsetLimit = `SELECT * FROM files WHERE is_show_on_gallery = ? LIMIT ?, ?`
 
 // FileDbItem are a slice of "FileDB"s
 type FileDbItem []*FileDb
@@ -70,6 +71,12 @@ func GetNumberOfFileDbItem() (int64, error) {
 		return 0, err
 	}
 	return count, nil
+}
+
+func GetGalleryList(offset, limit int) (FileDbItem, error) {
+	var files FileDbItem
+	err := meddler.QueryAll(db, &files, stmtGetFileOffsetLimit, 1, offset, limit)
+	return files, err
 }
 
 func (fileItem *FileDbItem) GetFileDbItem(page, size int64, orderBy string) (*utils.Pager, error) {

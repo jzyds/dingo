@@ -3,7 +3,9 @@ package handler
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -51,6 +53,39 @@ func FileGalleryStatusHandler(ctx *golf.Context) {
 	})
 }
 
+func GalleryListHandle(ctx *golf.Context) {
+	var files model.FileDbItem
+	var err error
+
+	pageList, ok := ctx.Request.URL.Query()["page"]
+	if !ok || len(pageList) < 1 {
+		ctx.SendStatus(http.StatusBadRequest)
+		ctx.JSON(APIResponseBodyJSON{Status: NewErrorStatusJSON(err.Error())})
+		return
+		log.Println("Url Param 'key' is missing")
+		return
+	}
+	limit := 10
+	page := pageList[0]
+
+	intPage, _ := strconv.Atoi(page)
+	if intPage < 1 {
+		ctx.SendStatus(http.StatusBadRequest)
+		ctx.JSON(APIResponseBodyJSON{Status: NewErrorStatusJSON(err.Error())})
+		return
+	}
+	intPage = intPage - 1
+
+	offset := intPage * limit
+	files, err = model.GetGalleryList(offset, limit)
+	if err != nil {
+		ctx.SendStatus(http.StatusBadRequest)
+		ctx.JSON(APIResponseBodyJSON{Status: NewErrorStatusJSON(err.Error())})
+		return
+	}
+	ctx.JSONIndent(files, "", "  ")
+}
+
 func FileDbViewHandle(ctx *golf.Context) {
 	userObj, _ := ctx.Session.Get("user")
 	u := userObj.(*model.User)
@@ -76,32 +111,6 @@ func FileDbViewHandle(ctx *golf.Context) {
 		"Pager": pager,
 	})
 }
-
-// func FileViewHandler(ctx *golf.Context) {
-// 	user, _ := ctx.Session.Get("user")
-// 	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
-// 	uploadDir = path.Clean(uploadDir)
-// 	ctx.Request.ParseForm()
-// 	dir, err := ctx.Query("dir")
-// 	dir = path.Clean(dir)
-
-// 	if err == nil && dir != uploadDir {
-// 	} else {
-// 		dir = uploadDir
-// 	}
-// 	var files []*model.File
-// 	if model.CheckSafe(dir, uploadDir) {
-// 		files = model.GetFileList(dir)
-// 	} else {
-// 		ctx.Abort(403)
-// 		return
-// 	}
-// 	ctx.Loader("admin").Render("files.html", map[string]interface{}{
-// 		"Title": "Files",
-// 		"Files": files,
-// 		"User":  user,
-// 	})
-// }
 
 func FileRemoveHandler(ctx *golf.Context) {
 	id := ctx.Request.FormValue("id")

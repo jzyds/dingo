@@ -98,7 +98,6 @@ func registerAdminURLHandlers(app *golf.Application) {
 
 	app.Post("/admin/files/gallery_status/", authChain.Final(FileGalleryStatusHandler))
 
-
 	app.Get("/admin/password/", authChain.Final(AdminPasswordPage))
 	app.Post("/admin/password/", authChain.Final(AdminPasswordChange))
 
@@ -108,6 +107,7 @@ func registerAdminURLHandlers(app *golf.Application) {
 func registerHomeHandler(app *golf.Application) {
 	statsChain := golf.NewChain()
 	app.Get("/", statsChain.Final(HomeHandler))
+	app.Get("/gallery", GalleryListHandle)
 	app.Get("/page/:page/", HomeHandler)
 	app.Post("/comment/:id/", CommentHandler)
 	app.Get("/tag/:tag/", TagHandler)
