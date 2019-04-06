@@ -39,3 +39,5 @@ dingo.rsa.pub
 upload/*
 
 node_modules
+
+main
