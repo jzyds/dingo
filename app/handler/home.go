@@ -21,7 +21,8 @@ func RegisterFunctions(app *golf.Application) {
 
 func HomeHandler(ctx *golf.Context) {
 	indexView := model.GetSettingValue("index_view")
-	if indexView == "" || indexView == "post_list.html" {
+	defaultView := "post_list.html"
+	if indexView == "" || indexView == defaultView {
 		p := ctx.Param("page")
 
 		var page int
@@ -43,7 +44,7 @@ func HomeHandler(ctx *golf.Context) {
 			"Pager": pager,
 		}
 		//	updateSidebarData(data)
-		ctx.Loader("theme").Render(indexView, data)
+		ctx.Loader("theme").Render(defaultView, data)
 	}else {
 		ctx.Loader("theme").Render(indexView)
 	}
