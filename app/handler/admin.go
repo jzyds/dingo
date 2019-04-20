@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/dinever/golf"
@@ -352,6 +353,7 @@ func SettingUpdateHandler(ctx *golf.Context) {
 	u := userObj.(*model.User)
 	var err error
 	ctx.Request.ParseForm()
+	fmt.Println(ctx.Request.Form)
 	for key, value := range ctx.Request.Form {
 		s := model.NewSetting(key, value[0], "")
 		s.CreatedBy = u.Id

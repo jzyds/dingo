@@ -107,8 +107,10 @@ func registerAdminURLHandlers(app *golf.Application) {
 func registerHomeHandler(app *golf.Application) {
 	statsChain := golf.NewChain()
 	app.Get("/", statsChain.Final(HomeHandler))
+	app.Get("/post_list_view", statsChain.Final(PostListHandler))
 	app.Get("/gallery", GalleryListHandle)
-	app.Get("/page/:page/", HomeHandler)
+	app.Get("/gallery_view/", statsChain.Final(GalleryViewHandler))
+	app.Get("/page/:page/", PostListHandler)
 	app.Post("/comment/:id/", CommentHandler)
 	app.Get("/tag/:tag/", TagHandler)
 	app.Get("/tag/:tag/page/:page/", TagHandler)

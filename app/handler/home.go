@@ -20,6 +20,36 @@ func RegisterFunctions(app *golf.Application) {
 }
 
 func HomeHandler(ctx *golf.Context) {
+	indexView := model.GetSettingValue("index_view")
+	if indexView == "" || indexView == "post_list.html" {
+		p := ctx.Param("page")
+
+		var page int
+		if p == "" {
+			page = 1
+		} else {
+			page, _ = strconv.Atoi(p)
+		}
+		posts := new(model.Posts)
+		pager, err := posts.GetPostList(int64(page), 5, false, true, "published_at DESC")
+		if err != nil {
+			ctx.Abort(404)
+			return
+		}
+		// theme := model.GetSetting("site_theme")
+		data := map[string]interface{}{
+			"Title": "Home",
+			"Posts": posts,
+			"Pager": pager,
+		}
+		//	updateSidebarData(data)
+		ctx.Loader("theme").Render(indexView, data)
+	}else {
+		ctx.Loader("theme").Render(indexView)
+	}
+}
+
+func PostListHandler(ctx *golf.Context)  {
 	p := ctx.Param("page")
 
 	var page int
@@ -41,8 +71,9 @@ func HomeHandler(ctx *golf.Context) {
 		"Pager": pager,
 	}
 	//	updateSidebarData(data)
-	ctx.Loader("theme").Render("index.html", data)
+	ctx.Loader("theme").Render("post_list.html", data)
 }
+
 
 func ContentHandler(ctx *golf.Context) {
 	slug := ctx.Param("slug")
@@ -64,6 +95,10 @@ func ContentHandler(ctx *golf.Context) {
 	} else {
 		ctx.Loader("theme").Render("article.html", data)
 	}
+}
+
+func GalleryViewHandler(ctx *golf.Context) {
+	ctx.Loader("theme").Render("gallery.html")
 }
 
 func CommentHandler(ctx *golf.Context) {
