@@ -4,6 +4,7 @@ dingo.db
 dingo.rsa
 dingo.rsa.pub
 
+.idea
 .DS_Store
 .AppleDouble
 .LSOverride
